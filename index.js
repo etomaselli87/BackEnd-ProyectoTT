@@ -126,18 +126,15 @@ switch (args[0]) {
 
 
     case "DELETE":
+
         // Punto 4 ==> Llamo a función DELETE que Elimina producto por ID y lo muestra 
         if (args[1].startsWith("products/")) {
             const id = args[1].split("/")[1];
             deleteProductById(id);
-
         } else {
             console.log("Recurso inválido");
         }
         break;
-
-
-
 
 
     default:
