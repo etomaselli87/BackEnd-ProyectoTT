@@ -1,8 +1,14 @@
-console.log("Iniciando Servidor");
+console.log("Inicio Programa");
+
 console.log(process.argv);
 
+//Filtrar-recortar los 2 primeros argumentos 'npm start'
 const args = process.argv.slice(2) ;
 
+
+/* -------------------------------------------------------------------------- */
+/*       FUNCIONES ==> 1-GET / 2-GET BY ID / 3-POST / 4-DELETE BY ID          */
+/* -------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------- */
 /*              CREO FUNCION getAllProducts() para el primer GET              */
@@ -52,18 +58,41 @@ async function getProductById(id) {
         console.log(error);
 
     } finally {
-        console.log('Fin de la tarea 2.Retornar Producto por ID ✅');
-        console.log('--------------------------------------------------');
+        console.log('Fin de la tarea 2.Retornar Producto buscado por ID ✅');
+        console.log('------------------------------------------------------');
     }
 }
 
 
 /* -------------------------------------------------------------------------- */
-/*                 CREO FUNCION para crear producto nuevo POST                */
+/*       CREO FUNCION createProduct() para crear producto nuevo POST          */
 /* -------------------------------------------------------------------------- */
 
+async function createProduct(producto) {
+    try {
+        const response = await fetch('https://fakestoreapi.com/products', {
+            method: "POST",
+            headers: { "Content-Type": "applicatio/json" },
+            body: JSON.stringify(producto)
+        })
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        console.log('Id del Producto Creado:', data.id);
+
+    } catch (error) {
+
+    } finally {
+        console.log('Fin de la tarea 3.Crear Producto Nuevo: Título/Precio/Categoría ✅');
+        console.log('-------------------------------------------------------------------');
+    }
+}
+
 /* -------------------------------------------------------------------------- */
-/*                CREO FUNCION para eliminar un producto DELETE               */
+/*      CREO FUNCION deleteById() para eliminar un producto DELETE            */
 /* -------------------------------------------------------------------------- */
 
 async function deleteProductById(id) {
@@ -94,7 +123,7 @@ async function deleteProductById(id) {
 
 
 
-/*--SWITCH INICIAL PARA ELEGIR FUNCION CORRESPONDIENTE DE ACUERDO AL COMANDO--*/
+/*-- SWITCH CASE ==> PARA ELEGIR FUNCION CORRESPONDIENTE DE ACUERDO AL COMANDO npm start --*/
 
 switch (args[0]) {
     case "GET":
@@ -109,15 +138,19 @@ switch (args[0]) {
             getProductById(id);
 
         } else {
-            console.log("Recurso inválido");
+            console.log("Comando inválido");
         }
         break;
 
 
     case "POST":
         console.log("POST");
-        if (args[2]) {
-            console.log(`Recibimos ${args[1]} satisfactoriamente`)
+
+        // Punto 3 ==> Pregunta si existen y estan completos los argumentos de nuevo producto
+        if (args[1] && args[1] === "products" && args[2] && args[3] && args[4]) {
+
+            // Llama a función pasando los args por Titulo, Precio, Categoría
+            await createProduct({title: args[2], price: args[3], category: args[4]})
         }else{
             console.log("Comando POST Incompleto")
         }
@@ -132,7 +165,7 @@ switch (args[0]) {
             const id = args[1].split("/")[1];
             deleteProductById(id);
         } else {
-            console.log("Recurso inválido");
+            console.log("Comando inválido");
         }
         break;
 
